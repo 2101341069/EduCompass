@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form name="punchout_form" method="post" action="https://openapi.alipay.com/gateway.do?charset=UTF-8&method=alipay.trade.wap.pay&sign=Pv%2FqaHhSK5SyIqE495OtM7400QzdVcyGObBV9o%2BCaokEhtDERpmwk%2FjzHwlcMju50UNGZ3%2FFz%2FDCMgiGwG7R2xqiucD2jjZvzr0nlkzTsHHB%2BtkbeG4l8YHCg2hZ45PsNfhMfrc0iSwEfIchtHmPic34%2FWOFMVMjrmC%2FPuMRFUyY5e5CCVxSV6Z4lplFIgb5RDUjD6nilpSTzMZjZ%2FSPfAk%2FACDuiWD26rcmD2YBHQKzKhzunYzEBEsu%2BCVxh3qUVw3aM98YfLL5KEUtIP9QpWRIJvp9ZIRm%2FcMMuG0iTEEf0bYFoAsWu6CZ2%2BpOZtp6DtH838bUQrkhDALtNmX13A%3D%3D&version=1.0&app_id=9021000135647272&sign_type=RSA&timestamp=2024-03-21+11%3A37%3A43&alipay_sdk=alipay-sdk-java-3.7.73.ALL&format=json">
+    <input type="hidden" name="biz_content" value="{&quot;out_trade_no&quot;:&quot;20210817010101004&quot;,&quot;total_amount&quot;:88,&quot;subject&quot;:&quot;测试商品&quot;,&quot;product_code&quot;:&quot;QUICK_WAP_WAY&quot;}">
+    <input type="submit" value="立即支付" style="display:none" >
+</form>
+<script>document.forms[0].submit();</script>
+</body>
+</html>

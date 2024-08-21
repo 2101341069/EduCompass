@@ -1,0 +1,45 @@
+#server:
+#  servlet:
+#    context-path: /content
+#  port: 63040
+#微服务配置
+spring:
+  application:
+    name: content-api
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.101.65:8848
+        namespace: dev01
+        group: xuecheng-plus-project
+      config:
+        server‐addr: 192.168.101.65:8848 # 配置中心地址
+        file‐extension: yaml
+         #开发环境content-api-dev.yaml
+        group: xuecheng-plus-project
+        refresh-enabled: true
+        namespace: dev01
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: freemarker-config-dev.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: redis-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+
+  profiles:
+    active: dev
+# 日志文件配置路径
+#logging:
+#  config: classpath:log4j2-dev.xml
