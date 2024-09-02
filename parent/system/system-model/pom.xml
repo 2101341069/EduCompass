@@ -4,16 +4,16 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>system</artifactId>
-        <groupId>com.xuecheng</groupId>
+        <groupId>com.EduCompass</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>system-model</artifactId>
-    <name>xuecheng-plus-system-model</name>
-    <description>xuecheng-plus-system-model</description>
+    <name>EduCompass-plus-system-model</name>
+    <description>EduCompass-plus-system-model</description>
 
     <dependencies>
         <dependency>
-            <groupId>com.xuecheng</groupId>
+            <groupId>com.EduCompass</groupId>
             <artifactId>base</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
