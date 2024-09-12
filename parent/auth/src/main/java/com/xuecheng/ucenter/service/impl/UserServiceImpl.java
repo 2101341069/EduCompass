@@ -29,8 +29,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private XcUserMapper userMapper;
 
     @Resource
     private XcMenuMapper xcMenuMapper;

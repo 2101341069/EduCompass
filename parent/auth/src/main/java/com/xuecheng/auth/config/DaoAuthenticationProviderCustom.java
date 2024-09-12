@@ -21,4 +21,7 @@ public class DaoAuthenticationProviderCustom extends DaoAuthenticationProvider {
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 
     }
+
+
+
 }

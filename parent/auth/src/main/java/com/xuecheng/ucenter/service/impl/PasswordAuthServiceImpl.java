@@ -43,13 +43,13 @@ public class PasswordAuthServiceImpl implements AuthService {
                 .eq(!StringUtils.isEmpty(userName), XcUser::getUsername, userName);
         XcUser xcUser = userMapper.selectOne(wrapper);
         if (xcUser==null){
-          throw new RuntimeException("账号不存在");
+          throw new RuntimeException("账号或密码错误");
         }
         String password = xcUser.getPassword();
         String passwordForm = authParamsDto.getPassword();
         boolean matches = passwordEncoder.matches(passwordForm, password);
         if (!matches){
-            throw new RuntimeException("密码错误");
+            throw new RuntimeException("账号或密码错误");
         }
         xcUser.setPassword(null);
         XcUserExt xcUserExt = new XcUserExt();

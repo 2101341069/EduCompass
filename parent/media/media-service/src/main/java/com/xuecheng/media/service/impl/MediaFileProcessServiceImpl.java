@@ -12,6 +12,9 @@ import com.xuecheng.media.service.MediaFileProcessService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,49 +43,60 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
         return result > 0;
     }
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
     @Override
     public void saveProcessFinishStatus(Long taskId, String status, String fileId, String url, String errorMsg) {
         MediaProcess mediaProcess = mediaProcessMapper.selectById(taskId);
         if (mediaProcess == null) {
             return;
         }
-        if (status.equals("3")) {
+        TransactionStatus transaction = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
+
+            if (status.equals("3")) {
 //            mediaProcess.setStatus("3");
 //            mediaProcess.setFailCount(mediaProcess.getFailCount()+1);
 //            mediaProcess.setErrormsg(errorMsg);
-            LambdaUpdateWrapper<MediaProcess> wrapper = new LambdaUpdateWrapper<>();
-            wrapper.set(MediaProcess::getStatus, status);
-            wrapper.set(MediaProcess::getFailCount, mediaProcess.getFailCount() + 1);
-            wrapper.set(MediaProcess::getErrormsg, errorMsg);
-            wrapper.eq(MediaProcess::getId, taskId);
-            mediaProcessMapper.update(null, wrapper);
+                LambdaUpdateWrapper<MediaProcess> wrapper = new LambdaUpdateWrapper<>();
+                wrapper.set(MediaProcess::getStatus, status);
+                wrapper.set(MediaProcess::getFailCount, mediaProcess.getFailCount() + 1);
+                wrapper.set(MediaProcess::getErrormsg, errorMsg);
+                wrapper.eq(MediaProcess::getId, taskId);
+                mediaProcessMapper.update(null, wrapper);
+            }
+            MediaFiles mediaFiles = mediaFilesMapper.selectById(fileId);
+            LambdaUpdateWrapper<MediaFiles> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.set(MediaFiles::getUrl, url);
+            wrapper.eq(MediaFiles::getId, mediaFiles.getId());
+            mediaFilesMapper.update(null, wrapper);
+
+
+            mediaProcess.setStatus("2");
+            mediaProcess.setUrl(url);
+            mediaProcess.setFinishDate(LocalDateTime.now());
+
+            LambdaUpdateWrapper<MediaProcess> updateWrapper = new LambdaUpdateWrapper<MediaProcess>();
+
+            updateWrapper.set(MediaProcess::getStatus, "2");
+            updateWrapper.set(MediaProcess::getFinishDate, LocalDate.now());
+            updateWrapper.eq(MediaProcess::getId, mediaProcess.getId());
+
+            mediaProcessMapper.update(null, updateWrapper);
+
+            MediaProcessHistory mediaProcessHistory = new MediaProcessHistory();
+
+
+            BeanUtils.copyProperties(mediaProcess, mediaProcessHistory);
+
+            mediaProcessHistoryMapper.insert(mediaProcessHistory);
+
+            mediaProcessMapper.deleteById(mediaProcess.getId());
+            transactionManager.commit(transaction);
+        } catch (Exception e) {
+            transactionManager.rollback(transaction);
         }
-        MediaFiles mediaFiles = mediaFilesMapper.selectById(fileId);
-        LambdaUpdateWrapper<MediaFiles> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.set(MediaFiles::getUrl, url);
-        wrapper.eq(MediaFiles::getId, mediaFiles.getId());
-        mediaFilesMapper.update(null, wrapper);
 
-
-        mediaProcess.setStatus("2");
-        mediaProcess.setUrl(url);
-        mediaProcess.setFinishDate(LocalDateTime.now());
-
-        LambdaUpdateWrapper<MediaProcess> updateWrapper = new LambdaUpdateWrapper<MediaProcess>();
-
-        updateWrapper.set(MediaProcess::getStatus, "2");
-        updateWrapper.set(MediaProcess::getFinishDate, LocalDate.now());
-        updateWrapper.eq(MediaProcess::getId, mediaProcess.getId());
-
-        mediaProcessMapper.update(null, updateWrapper);
-
-        MediaProcessHistory mediaProcessHistory = new MediaProcessHistory();
-
-
-        BeanUtils.copyProperties(mediaProcess, mediaProcessHistory);
-
-        mediaProcessHistoryMapper.insert(mediaProcessHistory);
-
-        mediaProcessMapper.deleteById(mediaProcess.getId());
     }
 }

@@ -109,7 +109,7 @@ public class VideoTask {
                     Mp4VideoUtil videoUtil = new Mp4VideoUtil(ffmpegpath, video_path, mp4_name, mp4_path);
                     //开始视频转换，成功将返回success
                     String s = videoUtil.generateMp4();
-                    if (!s.equals("success")) {
+                    if (!"success".equals(s)) {
                         logger.debug("视频转码失败，bucket：{}，objectname：{}", bucket, objectName);
                         processService.saveProcessFinishStatus(id, "3", mediaProcess.getFileId(), null, s);
                         return;
